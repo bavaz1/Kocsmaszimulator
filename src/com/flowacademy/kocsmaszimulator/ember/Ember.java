@@ -1,4 +1,6 @@
-package com.flowacademy.kocsmaszimulator;
+package com.flowacademy.kocsmaszimulator.ember;
+
+import com.flowacademy.kocsmaszimulator.ital.Ital;
 
 public class Ember {
     private String nev;
@@ -6,7 +8,7 @@ public class Ember {
     private boolean nem;
     private int reszegseg = 0;
     private int penz;
-    private boolean isKocsmaban = false;
+    private boolean kocsmaban = false;
     private static int EMBEREK_SZAMA = 0;
     public static final int RESZEGSEG_KORLAT = 40;
 
@@ -29,22 +31,31 @@ public class Ember {
     }
 
     public void hazamegy(){
-        isKocsmaban = false;
+        kocsmaban = false;
         System.out.println(nev + " elfáradt, hazamegy, viszlát.");
     }
 
     public void jon(){
-        isKocsmaban = true;
+        kocsmaban = true;
         System.out.println(nev + " bejött a kocsmába, üdvözöllek.");
+    }
+
+    public void kotozkodik(Ember kivel) {
+        if (Kidobo.getDolgoznakJelenleg() > 0) {
+            System.out.print("A kidobó szerint ");
+            hazamegy();
+        } else {
+            System.out.println(getNev() + " jót kötözködött.");
+        }
     }
 
     //Iszik metódusok létrehozása
     public void iszik(Kocsmaros kocsmaros){
-        if (kocsmaros.isKocsmaban() == true) {
-            if (isKocsmaban == true && penz > 0) {
+        if (kocsmaros.isKocsmaban()) {
+            if (kocsmaban && penz > 0) {
                 penz--;
                 reszegseg++;
-                kocsmaros.setKoszosPoharak();
+                kocsmaros.incKoszosPoharak();
                 kocsmaros.setPenz(1);
                 System.out.println(nev + " ivott egy pohárral. Pénze eggyel csökkent, míg részegsége eggyel nőtt.");
                 if (reszegseg >= RESZEGSEG_KORLAT) {
@@ -64,14 +75,14 @@ public class Ember {
     }
 
     public void iszik(Kocsmaros kocsmaros, Ital ital){
-        if (kocsmaros.isKocsmaban() == true) {
+        if (kocsmaros.isKocsmaban()) {
             int italAra = ital.getAr();
             int italAlkoholtartalma = ital.getAlkoholtartalom();
             String italNev = ital.getNev();
-            if (isKocsmaban == true && penz >= italAra) {
+            if (kocsmaban && penz >= italAra) {
                 penz -= italAra;
                 reszegseg += italAlkoholtartalma;
-                kocsmaros.setKoszosPoharak();
+                kocsmaros.incKoszosPoharak();
                 kocsmaros.setPenz(italAra);
                 System.out.println(nev + " ivott egy " + italNev + "-t. Pénze " + italAra + "-el csökkent, míg részegsége "
                         + italAlkoholtartalma + "-el nőtt.");
@@ -95,14 +106,45 @@ public class Ember {
         return EMBEREK_SZAMA;
     }
 
-    @Override
     public String toString() {
         return "Emberünk " +
                 "neve " + nev +
                 ", " + kor + " éves " +
-                ((nem == true) ? "férfi" : "nő") +
+                ((nem) ? "férfi" : "nő") +
                 ", részegsége " + reszegseg +
                 ", pénze " + penz +
-                " és " + ((isKocsmaban == true) ? "jelenleg a kocsmában tartózkodik." : "jelenleg nincs a kocsmában.");
+                ((kocsmaban) ? ", jelenleg a kocsmában tartózkodik" : ", jelenleg nincs a kocsmában");
+    }
+
+    public String getNev() {
+        return nev;
+    }
+
+    public void setNev(String nev) {
+        this.nev = nev;
+    }
+
+    public int getKor() {
+        return kor;
+    }
+
+    public void setKor(int kor) {
+        this.kor = kor;
+    }
+
+    public boolean isNem() {
+        return nem;
+    }
+
+    public void setNem(boolean nem) {
+        this.nem = nem;
+    }
+
+    public int getPenz() {
+        return penz;
+    }
+
+    public void setPenz(int penz) {
+        this.penz = penz;
     }
 }
